@@ -1,56 +1,43 @@
-import java.util.*;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
-        Fila filaComum = new Fila(100);
-        Fila filaVip = new Fila(100);
-        String[] clientesComum = new String[100];
-        long[] temposDeEntradaComum = new long[100];
-        int tamanhoFilaComum = 0;
+        Recepcionista recepcionista = new Recepcionista();
 
-        
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Fila.verificarEsperaComum(filaComum, filaVip, clientesComum, temposDeEntradaComum, tamanhoFilaComum);
-            }
-        }, 0, 20 * 60 * 1000);
+        while (true) {
 
-         System.out.println("Deseja adicionar um novo cliente? (Sim/Não): ");
-        String resposta = "null";
-        
+            System.out.println("\n< - - - - - - - Restaurante Cocina Mexico - - - - - - >");
+            System.out.println("1. Adicionar cliente");
+            System.out.println("2. Chamar próximo cliente");
+            System.out.println("3. Liberar mesa");
+            System.out.println("4. Sair");
+            System.out.print("Escolha uma opção: ");
 
-        while(resposta.equalsIgnoreCase("sim") || resposta.equalsIgnoreCase("não")){
-            resposta = scanner.nextLine();
-        }
-        
+            int escolha = scanner.nextInt();
 
-        if (resposta.equalsIgnoreCase("Sim")) {
-            System.out.println("Nome do cliente: ");
-            String nomeCliente = scanner.nextLine();
-            Fila.adicionarClienteComum(nomeCliente, clientesComum, temposDeEntradaComum, tamanhoFilaComum);
-        }
-    
-
-         while (true) {
-            // Verifique e mova clientes comuns que esperaram mais de 20 minutos para a fila VIP
-            Fila.verificarEsperaComum(filaComum, filaVip, clientesComum, temposDeEntradaComum, tamanhoFilaComum);
-
-            // Chame o próximo cliente com base na prioridade
-            Fila.chamarCliente(filaComum, filaVip, clientesComum, temposDeEntradaComum, tamanhoFilaComum);
-
-            // Simule algum tempo de espera antes de verificar novamente (em milissegundos)
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            switch (escolha) {
+                case 1:
+                    System.out.print("Nome do cliente: ");
+                    String nome = scanner.next();
+                    System.out.print("O cliente é VIP? (SIM / NÃO): ");
+                    String vip = scanner.next();
+                    long chegada = System.currentTimeMillis();
+                    recepcionista.addCliente(new Cliente(nome, vip, chegada));
+                    break;
+                case 2:
+                    recepcionista.proximo();
+                    break;
+                case 3:
+                    recepcionista.liberarMesa();
+                    break;
+                case 4:
+                    System.out.println("Finalizado!");
+                    System.exit(0);
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
             }
         }
-
-        
-
-       
-    
+    }
 }
